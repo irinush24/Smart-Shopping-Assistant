@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="SmartShoppingAssistantLigaAc.Api/SmartShoppingAssistantLigaAc.Api.csproj" />
+  <Project Path="SmartShoppingAssistantLigaAc.DataAccess/SmartShoppingAssistantLigaAc.DataAccess.csproj" />
+</Solution>
