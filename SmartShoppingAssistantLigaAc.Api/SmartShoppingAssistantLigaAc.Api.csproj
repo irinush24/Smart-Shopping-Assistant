@@ -18,4 +18,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SmartShoppingAssistantLigaAc.DataAccess\SmartShoppingAssistantLigaAc.DataAccess.csproj" />
+  </ItemGroup>
+
 </Project>
