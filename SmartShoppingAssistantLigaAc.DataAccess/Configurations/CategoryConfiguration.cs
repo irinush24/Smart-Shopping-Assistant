@@ -13,9 +13,10 @@ public class CategoryConfiguration : IEntityTypeConfiguration<Category>
         builder.HasKey(c => c.Id);
 
         builder.Property(c => c.Name).IsRequired().HasMaxLength(100);
-        builder.Property(c => c.Description).IsRequired().HasMaxLength(500);
+        builder.Property(c => c.Description).HasMaxLength(500);
 
         builder.HasMany(c => c.Products)
-            .WithMany(p => p.Categories);
+            .WithMany(p => p.Categories)
+            .UsingEntity("ProductCategories");
     }
 }
