@@ -13,7 +13,7 @@ public interface IProductService
 
     Task<ProductGetDTO> AddAsync(ProductGetDTO product, List<int> categoryIDs);
 
-    Task<List<ProductGetDTO>> GetAllAsync();
+    Task<List<ProductGetDTO>> GetAllAsync(int? categoryId = null);
 
     Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO, List<int> newCategoryIDs);
 }

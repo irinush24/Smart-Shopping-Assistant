@@ -1,10 +1,7 @@
-﻿using SmartShoppingAssistantLigaAc.DataAccess.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartShoppingAssistant.BusinessLogic.DTOs;
+﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistantLigaAc.DataAccess.Entities;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
+using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services;
 
@@ -13,7 +10,10 @@ public class CategoryService(IRepository<Category> CategoryRepository) : ICatego
     public async Task<CategoryGetDTO> GetByIdAsync(int id)
     {
         var Category = await CategoryRepository.GetByIdAsync(id);
-
+        if(Category == null)
+        {
+            throw new Exception($"Category with id {id} not found");
+        }
         return new CategoryGetDTO
         {
             Id = Category.Id,
@@ -45,11 +45,11 @@ public class CategoryService(IRepository<Category> CategoryRepository) : ICatego
 
     public async Task<List<CategoryGetDTO>> GetAllAsync()
     {
-        var Categorys = await CategoryRepository.GetAllAsync();
+        var Categories = await CategoryRepository.GetAllAsync();
 
         var CategoryDTOs = new List<CategoryGetDTO>();
 
-        foreach (var Category in Categorys)
+        foreach (var Category in Categories)
         {
             CategoryDTOs.Add(new CategoryGetDTO
             {

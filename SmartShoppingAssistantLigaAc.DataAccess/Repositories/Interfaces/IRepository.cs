@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SmartShoppingAssistantLigaAc.DataAccess.Repositories;
+namespace SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
 
 // CRUD operations
 

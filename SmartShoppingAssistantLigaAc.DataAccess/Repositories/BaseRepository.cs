@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SmartShoppingAssistantLigaAc.DataAccess.Entities;
+using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
 
 namespace SmartShoppingAssistantLigaAc.DataAccess.Repositories;
 

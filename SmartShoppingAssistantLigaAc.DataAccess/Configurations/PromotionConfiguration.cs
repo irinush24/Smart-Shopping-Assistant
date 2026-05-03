@@ -22,16 +22,12 @@ public class PromotionConfiguration : IEntityTypeConfiguration<Promotion>
 
         builder.Property(p => p.RewardValue).IsRequired();
 
-        builder.HasOne(p => p.Product)
+        builder.HasMany(p => p.Products)
             .WithMany(p => p.Promotions)
-            .HasForeignKey(p => p.ProductId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.SetNull);
+            .UsingEntity(j => j.ToTable("PromotionProducts"));
 
-        builder.HasOne(p => p.Category)
-            .WithMany(p => p.Promotions)
-            .HasForeignKey(p => p.CategoryId)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.HasMany(p => p.Categories)
+            .WithMany(c => c.Promotions)
+            .UsingEntity(j => j.ToTable("PromotionCategories"));
     }
 }

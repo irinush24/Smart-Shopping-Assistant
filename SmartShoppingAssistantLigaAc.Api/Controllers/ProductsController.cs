@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartShoppingAssistant.BusinessLogic.DTOs;
+using SmartShoppingAssistant.BusinessLogic.DTOs.Requests;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
 namespace SmartShoppingAssistantLigaAc.Api.Controllers;
@@ -38,11 +39,11 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProductGetDTO>>> GetAll()
+    public async Task<ActionResult<List<ProductGetDTO>>> GetAll([FromQuery] int? categoryId)
     {
         try
         {
-            var products = await productService.GetAllAsync();
+            var products = await productService.GetAllAsync(categoryId);
             return Ok(products);
         }
         catch (Exception ex)
@@ -66,11 +67,11 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ProductGetDTO>> Update(int id, ProductGetDTO product, List<int> newCategoryIDs)
+    public async Task<ActionResult<ProductGetDTO>> Update(int id, ProductRequest request)
     {
         try
         {
-            var updatedProduct = await productService.UpdateAsync(id, product, newCategoryIDs);
+            var updatedProduct = await productService.UpdateAsync(id, request.Product, request.NewCategoryIDs);
             return Ok(updatedProduct);
 
         }

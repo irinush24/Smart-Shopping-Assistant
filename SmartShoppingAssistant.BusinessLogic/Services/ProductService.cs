@@ -1,19 +1,18 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistantLigaAc.DataAccess.Entities;
-using SmartShoppingAssistantLigaAc.DataAccess.Repositories;
+using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services;
 
-public class ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository): IProductService
+public class ProductService(IRepository<Category> categoryRepository, IProductRepository customProductRepository): IProductService
 {
     public async Task<ProductGetDTO> GetByIdAsync(int id)
     {
-        var product = await productRepository.GetByIdAsync(id);
-
+        var product = await customProductRepository.GetByIdAsync(id);
         return new ProductGetDTO
         {
             Id = product.Id,
@@ -41,7 +40,7 @@ public class ProductService(IRepository<Product> productRepository, IRepository<
                 product.Categories.Add(category);
             }
         }
-        var addedProduct = await productRepository.AddAsync(product);
+        var addedProduct = await customProductRepository.AddAsync(product);
         return new ProductGetDTO
         {
             Id = addedProduct.Id,
@@ -54,12 +53,21 @@ public class ProductService(IRepository<Product> productRepository, IRepository<
 
     public async Task DeleteAsync(int id)
     {
-        await productRepository.DeleteAsync(id);
+       await customProductRepository.DeleteAsync(id);
     }
 
-    public async Task<List<ProductGetDTO>> GetAllAsync()
+    public async Task<List<ProductGetDTO>> GetAllAsync(int? categoryId = null)
     {
-        var products = await productRepository.GetAllAsync();
+        List<Product> products;
+
+        if(categoryId.HasValue)
+        {
+            products = await customProductRepository.GetProductsByCategoryIdAsync(categoryId.Value);
+        }
+        else
+        {
+            products = await customProductRepository.GetAllAsync();
+        }
 
         var productDTOs = new List<ProductGetDTO>();
         
@@ -71,7 +79,12 @@ public class ProductService(IRepository<Product> productRepository, IRepository<
                 Name = product.Name,
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
-                Price = product.Price
+                Price = product.Price,
+                Categories = product.Categories.Select(c => new CategoryGetDTO
+                {
+                    Id = c.Id,
+                    Name = c.Name
+                }).ToList()
             });
         }
 
@@ -80,19 +93,23 @@ public class ProductService(IRepository<Product> productRepository, IRepository<
 
     public async Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO, List<int> newCategoryIDs)
     {
-        var existingProduct = await productRepository.GetByIdAsync(id);
+        var existingProduct = await customProductRepository.GetProductWithCategoriesAsync(id);
+        
         if (existingProduct == null)
         {
             throw new Exception($"Product with id {id} not found");
         }
+
+
         existingProduct.Name = productDTO.Name;
         existingProduct.Description = productDTO.Description;
         existingProduct.ImageUrl = productDTO.ImageUrl;
         existingProduct.Price = productDTO.Price;
-        existingProduct.Categories = productDTO.Categories.Select(c => new Category { Id = c.Id }).ToList();
-        var toAdd = newCategoryIDs.Except(existingProduct.Categories.Select(c => c.Id));
-        var toRemove = existingProduct.Categories.Select(c => c.Id).Except(newCategoryIDs);
-        foreach (var categoryId in toAdd)
+
+
+        existingProduct.Categories.Clear();
+
+        foreach (var categoryId in newCategoryIDs)
         {
             var category = await categoryRepository.GetByIdAsync(categoryId);
             if (category != null)
@@ -100,22 +117,20 @@ public class ProductService(IRepository<Product> productRepository, IRepository<
                 existingProduct.Categories.Add(category);
             }
         }
-        foreach(var categoryId in toRemove)
-        {
-            var category = await categoryRepository.GetByIdAsync(categoryId);
-            if (category != null)
-            {
-                existingProduct.Categories.Remove(category);
-            }
-        }
-        var updatedProduct = await productRepository.UpdateAsync(existingProduct);
+        
+        var updatedProduct = await customProductRepository.UpdateAsync(existingProduct);
         return new ProductGetDTO
         {
             Id = updatedProduct.Id,
             Name = updatedProduct.Name,
             Description = updatedProduct.Description,
             ImageUrl = updatedProduct.ImageUrl,
-            Price = updatedProduct.Price
+            Price = updatedProduct.Price,
+            Categories = updatedProduct.Categories.Select(c => new CategoryGetDTO
+            {
+                Id = c.Id,
+                Name = c.Name
+            }).ToList()
         };
     }
 }
