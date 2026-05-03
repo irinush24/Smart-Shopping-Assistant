@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using SmartShoppingAssistantLigaAc.DataAccess;
 using SmartShoppingAssistantLigaAc.DataAccess.Repositories;
@@ -21,6 +20,9 @@ builder.Services.AddDbContext<SmartShoppingAssistantDbContext>(options =>
 
 builder.Services.AddScoped<IRepository<Product>, BaseRepository<Product>>();
 builder.Services.AddScoped<IProductService, ProductService>();
+
+builder.Services.AddScoped<IRepository<Category>, BaseRepository<Category>>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 

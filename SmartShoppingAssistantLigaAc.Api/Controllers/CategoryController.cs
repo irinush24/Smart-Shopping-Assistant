@@ -4,18 +4,19 @@ using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
 namespace SmartShoppingAssistantLigaAc.Api.Controllers;
 
+
 [Route("api/[controller]")]
 [ApiController]
 
-public class ProductsController(IProductService productService) : ControllerBase
+public class CategoryController(ICategoryService categoryService) : ControllerBase
 {
     [HttpGet("{id}")]
-    public async Task<ActionResult<ProductGetDTO>> GetById(int id)
+    public async Task<ActionResult<CategoryGetDTO>> GetById(int id)
     {
         try
         {
-            var product = await productService.GetByIdAsync(id);
-            return Ok(product);
+            var category = await categoryService.GetByIdAsync(id);
+            return Ok(category);
         }
         catch (Exception ex)
         {
@@ -24,11 +25,11 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult<ProductGetDTO>> Delete(int id)
+    public async Task<ActionResult<CategoryGetDTO>> Delete(int id)
     {
         try
         {
-            await productService.DeleteAsync(id);
+            await categoryService.DeleteAsync(id);
             return Ok();
         }
         catch (Exception ex)
@@ -38,12 +39,12 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ProductGetDTO>>> GetAll()
+    public async Task<ActionResult<List<CategoryGetDTO>>> GetAll()
     {
         try
         {
-            var products = await productService.GetAllAsync();
-            return Ok(products);
+            var categories = await categoryService.GetAllAsync();
+            return Ok(categories);
         }
         catch (Exception ex)
         {
@@ -52,12 +53,12 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductGetDTO>> Add(ProductGetDTO productDTO)
+    public async Task<ActionResult<CategoryGetDTO>> Add(CategoryGetDTO categoryDTO)
     {
         try
         {
-            var addedProduct = await productService.AddAsync(productDTO, new List<int>());
-            return CreatedAtAction(nameof(GetById), new { id = addedProduct.Id }, addedProduct);
+            var addedCategory = await categoryService.AddAsync(categoryDTO);
+            return CreatedAtAction(nameof(GetById), new { id = addedCategory.Id }, addedCategory);
         }
         catch (Exception ex)
         {
@@ -66,12 +67,12 @@ public class ProductsController(IProductService productService) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ProductGetDTO>> Update(int id, ProductGetDTO product, List<int> newCategoryIDs)
+    public async Task<ActionResult<CategoryGetDTO>> Update(int id, CategoryGetDTO category)
     {
         try
         {
-            var updatedProduct = await productService.UpdateAsync(id, product, newCategoryIDs);
-            return Ok(updatedProduct);
+            var updatedCategory = await categoryService.UpdateAsync(id,category);
+            return Ok(updatedCategory);
 
         }
         catch (Exception ex)

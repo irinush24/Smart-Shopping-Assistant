@@ -8,7 +8,7 @@ using System.Text;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services;
 
-public class ProductService(IRepository<Product> productRepository): IProductService
+public class ProductService(IRepository<Product> productRepository, IRepository<Category> categoryRepository): IProductService
 {
     public async Task<ProductGetDTO> GetByIdAsync(int id)
     {
@@ -24,7 +24,7 @@ public class ProductService(IRepository<Product> productRepository): IProductSer
         };
     }
 
-    public async Task<ProductGetDTO> AddAsync(ProductGetDTO productDTO)
+    public async Task<ProductGetDTO> AddAsync(ProductGetDTO productDTO, List<int> categoryIDs)
     {
         var product = new Product
         {
@@ -33,6 +33,14 @@ public class ProductService(IRepository<Product> productRepository): IProductSer
             ImageUrl = productDTO.ImageUrl,
             Price = productDTO.Price
         };
+        foreach(var categoryId in categoryIDs)
+        {
+            var category = await categoryRepository.GetByIdAsync(categoryId);
+            if (category != null)
+            {
+                product.Categories.Add(category);
+            }
+        }
         var addedProduct = await productRepository.AddAsync(product);
         return new ProductGetDTO
         {
@@ -70,7 +78,7 @@ public class ProductService(IRepository<Product> productRepository): IProductSer
         return productDTOs;
     }
 
-    public async Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO)
+    public async Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO, List<int> newCategoryIDs)
     {
         var existingProduct = await productRepository.GetByIdAsync(id);
         if (existingProduct == null)
@@ -81,6 +89,25 @@ public class ProductService(IRepository<Product> productRepository): IProductSer
         existingProduct.Description = productDTO.Description;
         existingProduct.ImageUrl = productDTO.ImageUrl;
         existingProduct.Price = productDTO.Price;
+        existingProduct.Categories = productDTO.Categories.Select(c => new Category { Id = c.Id }).ToList();
+        var toAdd = newCategoryIDs.Except(existingProduct.Categories.Select(c => c.Id));
+        var toRemove = existingProduct.Categories.Select(c => c.Id).Except(newCategoryIDs);
+        foreach (var categoryId in toAdd)
+        {
+            var category = await categoryRepository.GetByIdAsync(categoryId);
+            if (category != null)
+            {
+                existingProduct.Categories.Add(category);
+            }
+        }
+        foreach(var categoryId in toRemove)
+        {
+            var category = await categoryRepository.GetByIdAsync(categoryId);
+            if (category != null)
+            {
+                existingProduct.Categories.Remove(category);
+            }
+        }
         var updatedProduct = await productRepository.UpdateAsync(existingProduct);
         return new ProductGetDTO
         {

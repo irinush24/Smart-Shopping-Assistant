@@ -11,9 +11,9 @@ public interface IProductService
 
     Task DeleteAsync(int id);
 
-    Task<ProductGetDTO> AddAsync(ProductGetDTO product);
+    Task<ProductGetDTO> AddAsync(ProductGetDTO product, List<int> categoryIDs);
 
     Task<List<ProductGetDTO>> GetAllAsync();
 
-    Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO);
+    Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO, List<int> newCategoryIDs);
 }
