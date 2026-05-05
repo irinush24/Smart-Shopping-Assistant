@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartShoppingAssistant.BusinessLogic.DTOs;
+﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using SmartShoppingAssistantLigaAc.DataAccess.Entities;
 using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
@@ -157,7 +154,28 @@ public class PromotionService (IPromotionRepository promotionRepository, IReposi
             Threshold = updatedPromotion.Threshold,
             Reward = updatedPromotion.Reward,
             RewardValue = updatedPromotion.RewardValue,
-            IsActive = updatedPromotion.IsActive
+            IsActive = updatedPromotion.IsActive,
+            Products = updatedPromotion.Products.Select(p => new Product { Id = p.Id, Name = p.Name }).ToList(),
+            Categories = updatedPromotion.Categories.Select(c => new Category { Id = c.Id, Name = c.Name }).ToList()
         };
     }
-}
+
+    public async Task<List<PromotionGetDTO>> GetForProductsAsync(int productId)
+    {
+        var promotions = await promotionRepository.GetForProductsAsync(productId);
+        return promotions.Select(MapToDTO).ToList();
+    }
+
+    private static PromotionGetDTO MapToDTO(Promotion promotion) => new()
+    {
+        Id = promotion.Id,
+        Name = promotion.Name,
+        Type = promotion.Type,
+        Threshold = promotion.Threshold,
+        Reward = promotion.Reward,
+        RewardValue = promotion.RewardValue,
+        IsActive = promotion.IsActive,
+        Products = promotion.Products.Select(p => new Product { Id = p.Id, Name = p.Name }).ToList(),
+        Categories = promotion.Categories.Select(c => new Category { Id = c.Id, Name = c.Name }).ToList()
+    };
+}   

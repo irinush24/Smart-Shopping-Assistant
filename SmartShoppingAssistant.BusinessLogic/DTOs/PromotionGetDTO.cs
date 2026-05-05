@@ -15,4 +15,7 @@ public class PromotionGetDTO
     public PromotionReward Reward { get; set; }
     public int RewardValue { get; set; }
     public bool IsActive { get; set; }
+
+    public ICollection<Category> Categories { get; set; } = new List<Category>();
+    public ICollection<Product> Products { get; set; } = new List<Product>();
 }

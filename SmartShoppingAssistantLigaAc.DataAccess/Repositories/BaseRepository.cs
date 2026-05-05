@@ -98,4 +98,6 @@ public class BaseRepository<TEntity>(SmartShoppingAssistantDbContext context) : 
             throw new Exception($"Error while updating entity: {ex.Message}", ex);
         }
     }
+
+    public IQueryable<TEntity> GetAllAsQueryable() => context.Set<TEntity>().AsQueryable();
 }

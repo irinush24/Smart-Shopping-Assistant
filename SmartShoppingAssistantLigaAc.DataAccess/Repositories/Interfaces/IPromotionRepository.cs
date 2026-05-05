@@ -11,4 +11,6 @@ public interface IPromotionRepository:IRepository<Promotion>
     public Task<Promotion> GetPromotionByIdAsync(int id);
 
     public Task<List<Promotion>> GetActivePromotionsAsync();
+
+    public Task<List<Promotion>> GetForProductsAsync(int productId);
 }

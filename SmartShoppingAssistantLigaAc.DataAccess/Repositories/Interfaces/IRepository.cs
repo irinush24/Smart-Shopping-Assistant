@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,4 +17,6 @@ public interface IRepository<TEntity> where TEntity : class
     Task <TEntity> UpdateAsync(TEntity entity);
 
     Task DeleteAsync(int id);
+
+    public IQueryable<TEntity> GetAllAsQueryable();
 }
