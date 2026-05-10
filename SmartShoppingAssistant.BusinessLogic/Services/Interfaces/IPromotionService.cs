@@ -1,19 +1,13 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
 public interface IPromotionService
 {
-    Task<PromotionGetDTO> AddAsync(PromotionGetDTO promotion, List<int> categoryID, List<int> productID);
-
-    Task<PromotionGetDTO> GetByIdAsync(int id);
-
     Task<List<PromotionGetDTO>> GetAllAsync();
-
-    Task<PromotionGetDTO> UpdateAsync(int id, PromotionGetDTO promotionDTO, List<int> newCategoryID, List<int> newProductID);
-
+    Task<PromotionGetDTO> GetByIdAsync(int id);
+    Task<PromotionGetDTO> CreateAsync(PromotionCreateDTO dto);
+    Task<PromotionGetDTO> UpdateAsync(int id, PromotionUpdateDTO dto);
     Task DeleteAsync(int id);
+    Task<List<PromotionGetDTO>> GetForProductAsync(int productId);
 }

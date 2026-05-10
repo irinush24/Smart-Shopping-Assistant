@@ -1,19 +1,14 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 
 public interface IProductService
 {
+    Task<List<ProductGetDTO>> GetAllAsync(int? categoryId, string? name, decimal? minPrice, decimal? maxPrice);
     Task<ProductGetDTO> GetByIdAsync(int id);
-
+    Task<ProductGetDTO> CreateAsync(ProductCreateDTO dto);
+    Task<ProductGetDTO> UpdateAsync(int id, ProductUpdateDTO dto);
     Task DeleteAsync(int id);
-
-    Task<ProductGetDTO> AddAsync(ProductGetDTO product, List<int> categoryIDs);
-
-    Task<List<ProductGetDTO>> GetAllAsync(int? categoryId = null);
-
-    Task<ProductGetDTO> UpdateAsync(int id, ProductGetDTO productDTO, List<int> newCategoryIDs);
+    Task<List<ProductGetDTO>> SearchAsync(string query);
+    Task<List<ProductGetDTO>> GetByCategoryAsync(int categoryId);
 }

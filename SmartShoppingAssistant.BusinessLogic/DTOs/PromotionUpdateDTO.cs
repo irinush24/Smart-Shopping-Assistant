@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartShoppingAssistant.DataAccess.Entities;
-using SmartShoppingAssistant.DataAccess.Entities.Enums;
+﻿using SmartShoppingAssistant.DataAccess.Entities.Enums;
 
 namespace SmartShoppingAssistant.BusinessLogic.DTOs;
 
-public class PromotionGetDTO
+public class PromotionUpdateDTO
 {
-    public int Id { get; set; }
     public string Name { get; set; } = null!;
     public PromotionType Type { get; set; }
     public decimal Threshold { get; set; }

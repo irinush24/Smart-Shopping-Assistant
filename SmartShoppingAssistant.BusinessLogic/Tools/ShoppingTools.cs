@@ -1,6 +1,6 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using SmartShoppingAssistantLigaAc.DataAccess.Configurations;
+using SmartShoppingAssistant.DataAccess.Configurations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +15,13 @@ public class ShoppingTools
     public static async Task<List<PromotionGetDTO>> GetPromotionsForProduct(
         [Description("The product ID to check")] int productId, IPromotionService promotionService)
     {
-        return await promotionService.GetForProductsAsync(productId);
+        return await promotionService.GetForProductAsync(productId);
+    }
+
+    public static async Task<string> GetProductsByCategory(int categoryId, IProductService productService)
+    {
+        var products = await productService.GetByCategoryAsync(categoryId);
+
+        return string.Join(", ", products.Select(p => $"{{ Id: {p.Id}, Name: {p.Name}, Price: {p.Price} }}"));
     }
 }

@@ -1,181 +1,74 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using SmartShoppingAssistantLigaAc.DataAccess.Entities;
-using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
+using SmartShoppingAssistant.DataAccess.Entities;
+using SmartShoppingAssistant.DataAccess.Repositories.Interfaces;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services;
 
-public class PromotionService (IPromotionRepository promotionRepository, IRepository<Category> categoryRepository, IProductRepository productRepository): IPromotionService
+public class PromotionService(IPromotionRepository promotionRepository) : IPromotionService
 {
-    public async Task<PromotionGetDTO> AddAsync(PromotionGetDTO promotionDTO, List<int>categoryIds, List<int>productIds)
+    public async Task<List<PromotionGetDTO>> GetAllAsync()
     {
-        var promotion = new Promotion
-        {
-            Id = promotionDTO.Id,
-            Name = promotionDTO.Name,
-            Type = promotionDTO.Type,
-            Threshold = promotionDTO.Threshold,
-            Reward = promotionDTO.Reward,
-            RewardValue = promotionDTO.RewardValue,
-            IsActive = promotionDTO.IsActive
-        };
-        foreach(var categoryId in categoryIds)
-        {
-            var category = await categoryRepository.GetByIdAsync(categoryId);
-            if(category != null)
-            {
-                promotion.Categories.Add(category);
-            }
-        }
-        foreach(var productId in productIds)
-        {
-            var product = await productRepository.GetByIdAsync(productId);
-            if(product != null)
-            {
-                promotion.Products.Add(product);
-            }
-        }
-        var addedPromotion = await promotionRepository.AddAsync(promotion);
-        return new PromotionGetDTO
-        {
-            Id = addedPromotion.Id,
-            Name = addedPromotion.Name,
-            Type = addedPromotion.Type,
-            Threshold = addedPromotion.Threshold,
-            Reward= addedPromotion.Reward,
-            RewardValue= addedPromotion.RewardValue,
-            IsActive= addedPromotion.IsActive
-        };
+        var promotions = await promotionRepository.GetAllAsync();
+        return promotions.Select(MapToDTO).ToList();
     }
 
     public async Task<PromotionGetDTO> GetByIdAsync(int id)
     {
         var promotion = await promotionRepository.GetByIdAsync(id);
-        if (promotion == null)
+        return MapToDTO(promotion);
+    }
+
+    public async Task<PromotionGetDTO> CreateAsync(PromotionCreateDTO dto)
+    {
+        var promotion = new Promotion
         {
-            throw new Exception($"Promotion with ID {id} not found.");
-        }
-        return new PromotionGetDTO
-        {
-            Id = promotion.Id,
-            Name = promotion.Name,
-            Type = promotion.Type,
-            Threshold = promotion.Threshold,
-            Reward = promotion.Reward,
-            RewardValue = promotion.RewardValue,
-            IsActive = promotion.IsActive
+            Name = dto.Name,
+            Type = dto.Type,
+            Threshold = dto.Threshold,
+            Reward = dto.Reward,
+            RewardValue = dto.RewardValue,
+            ProductId = dto.ProductId,
+            CategoryId = dto.CategoryId,
+            IsActive = dto.IsActive
         };
+        var created = await promotionRepository.AddAsync(promotion);
+        return MapToDTO(created);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task<PromotionGetDTO> UpdateAsync(int id, PromotionUpdateDTO dto)
     {
-        await promotionRepository.DeleteAsync(id);
+        var promotion = await promotionRepository.GetByIdAsync(id);
+        promotion.Name = dto.Name;
+        promotion.Type = dto.Type;
+        promotion.Threshold = dto.Threshold;
+        promotion.Reward = dto.Reward;
+        promotion.RewardValue = dto.RewardValue;
+        promotion.ProductId = dto.ProductId;
+        promotion.CategoryId = dto.CategoryId;
+        promotion.IsActive = dto.IsActive;
+        var updated = await promotionRepository.UpdateAsync(promotion);
+        return MapToDTO(updated);
     }
 
-    public async Task<List<PromotionGetDTO>> GetAllAsync()
+    public Task DeleteAsync(int id) => promotionRepository.DeleteAsync(id);
+
+    public async Task<List<PromotionGetDTO>> GetForProductAsync(int productId)
     {
-        var promotions = await promotionRepository.GetAllAsync();
-        var promotionDTOs = new List<PromotionGetDTO>();
-        foreach (var promotion in promotions)
-        {
-            promotionDTOs.Add(new PromotionGetDTO
-            {
-                Id = promotion.Id,
-                Name = promotion.Name,
-                Type = promotion.Type,
-                Threshold = promotion.Threshold,
-                Reward = promotion.Reward,
-                RewardValue = promotion.RewardValue,
-                IsActive = promotion.IsActive
-            });
-        }
-        return promotionDTOs;
-    }
-
-    public async Task<PromotionGetDTO> UpdateAsync(int id, PromotionGetDTO promotionDTO, List<int> newCategoryID, List<int> newProductID)
-    {
-        var existingPromotion = await promotionRepository.GetPromotionByIdAsync(id);
-        if (existingPromotion == null)
-        {
-            throw new Exception($"Promotion with ID {id} not found.");
-        }
-        existingPromotion.Name = promotionDTO.Name;
-        existingPromotion.Type = promotionDTO.Type;
-        existingPromotion.Threshold = promotionDTO.Threshold;
-        existingPromotion.Reward = promotionDTO.Reward;
-        existingPromotion.RewardValue = promotionDTO.RewardValue;
-        existingPromotion.IsActive = promotionDTO.IsActive;
-        existingPromotion.Categories.Clear();
-        existingPromotion.Products.Clear();
-        var categoriesToRemove = existingPromotion.Categories.Where(c => !newCategoryID.Contains(c.Id)).ToList();
-
-        foreach (var cat in categoriesToRemove)
-        {
-            existingPromotion.Categories.Remove(cat);
-        }
-
-        foreach(var categoryId in newCategoryID)
-        {
-            if(!existingPromotion.Categories.Any(c => c.Id == categoryId))
-            {
-                var category = await categoryRepository.GetByIdAsync(categoryId);
-                if(category != null)
-                {
-                    existingPromotion.Categories.Add(category);
-                }
-            }
-        }
-
-        var productsToRemove = existingPromotion.Products.Where(p => !newProductID.Contains(p.Id)).ToList();
-        foreach (var product in productsToRemove)
-        {
-            existingPromotion.Products.Remove(product);
-        }
-
-        foreach (var productId in newProductID)
-        {
-            if(!existingPromotion.Products.Any(p => p.Id == productId))
-            {
-                var product = await productRepository.GetByIdAsync(productId);
-                if (product != null)
-                {
-                    existingPromotion.Products.Add(product);
-                }
-            }
-        }
-
-        var updatedPromotion = await promotionRepository.UpdateAsync(existingPromotion);
-
-        return new PromotionGetDTO
-        {
-            Id = updatedPromotion.Id,
-            Name = updatedPromotion.Name,
-            Type = updatedPromotion.Type,
-            Threshold = updatedPromotion.Threshold,
-            Reward = updatedPromotion.Reward,
-            RewardValue = updatedPromotion.RewardValue,
-            IsActive = updatedPromotion.IsActive,
-            Products = updatedPromotion.Products.Select(p => new Product { Id = p.Id, Name = p.Name }).ToList(),
-            Categories = updatedPromotion.Categories.Select(c => new Category { Id = c.Id, Name = c.Name }).ToList()
-        };
-    }
-
-    public async Task<List<PromotionGetDTO>> GetForProductsAsync(int productId)
-    {
-        var promotions = await promotionRepository.GetForProductsAsync(productId);
+        var promotions = await promotionRepository.GetForProductAsync(productId);
         return promotions.Select(MapToDTO).ToList();
     }
 
-    private static PromotionGetDTO MapToDTO(Promotion promotion) => new()
+    private static PromotionGetDTO MapToDTO(Promotion p) => new()
     {
-        Id = promotion.Id,
-        Name = promotion.Name,
-        Type = promotion.Type,
-        Threshold = promotion.Threshold,
-        Reward = promotion.Reward,
-        RewardValue = promotion.RewardValue,
-        IsActive = promotion.IsActive,
-        Products = promotion.Products.Select(p => new Product { Id = p.Id, Name = p.Name }).ToList(),
-        Categories = promotion.Categories.Select(c => new Category { Id = c.Id, Name = c.Name }).ToList()
+        Id = p.Id,
+        Name = p.Name,
+        Type = p.Type,
+        Threshold = p.Threshold,
+        Reward = p.Reward,
+        RewardValue = p.RewardValue,
+        ProductId = p.ProductId,
+        CategoryId = p.CategoryId,
+        IsActive = p.IsActive
     };
 }   

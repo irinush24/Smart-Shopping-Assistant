@@ -6,11 +6,12 @@ namespace SmartShoppingAssistant.BusinessLogic.DTOs;
 
 public class CartGetDTO
 {
-    public List<CartItemGetDTO> Items { get; set; } = new List<CartItemGetDTO>();
-    public decimal BaseTotal { get; set; }
-    public decimal DiscountAmount { get; set; }
+    public List<CartItemGetDTO> Items { get; set; } = new();
+    public decimal Subtotal { get; set; }
 
-    public decimal FinalTotal {  get; set; }
+    public List<AppliedPromotionDTO> AppliedPromotions { get; set; } = new();
 
-    public List<String> AppliedPromotions { get; set; } = new List<String>();
+    
+    public decimal TotalDiscount { get; set; }
+    public decimal Total { get; set; }
 }

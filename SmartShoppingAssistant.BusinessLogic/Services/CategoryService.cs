@@ -1,82 +1,46 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
-using SmartShoppingAssistantLigaAc.DataAccess.Entities;
+using SmartShoppingAssistant.DataAccess.Entities;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
-using SmartShoppingAssistantLigaAc.DataAccess.Repositories.Interfaces;
+using SmartShoppingAssistant.DataAccess.Repositories.Interfaces;
 
 namespace SmartShoppingAssistant.BusinessLogic.Services;
 
-public class CategoryService(IRepository<Category> CategoryRepository) : ICategoryService
+public class CategoryService(ICategoryRepository categoryRepository) : ICategoryService
 {
-    public async Task<CategoryGetDTO> GetByIdAsync(int id)
-    {
-        var Category = await CategoryRepository.GetByIdAsync(id);
-        if(Category == null)
-        {
-            throw new Exception($"Category with id {id} not found");
-        }
-        return new CategoryGetDTO
-        {
-            Id = Category.Id,
-            Name = Category.Name,
-            Description = Category.Description
-        };
-    }
-
-    public async Task<CategoryGetDTO> AddAsync(CategoryGetDTO CategoryDTO)
-    {
-        var Category = new Category
-        {
-            Name = CategoryDTO.Name,
-            Description = CategoryDTO.Description
-        };
-        var addedCategory = await CategoryRepository.AddAsync(Category);
-        return new CategoryGetDTO
-        {
-            Id = addedCategory.Id,
-            Name = addedCategory.Name,
-            Description = addedCategory.Description
-        };
-    }
-
-    public async Task DeleteAsync(int id)
-    {
-        await CategoryRepository.DeleteAsync(id);
-    }
-
     public async Task<List<CategoryGetDTO>> GetAllAsync()
     {
-        var Categories = await CategoryRepository.GetAllAsync();
-
-        var CategoryDTOs = new List<CategoryGetDTO>();
-
-        foreach (var Category in Categories)
-        {
-            CategoryDTOs.Add(new CategoryGetDTO
-            {
-                Id = Category.Id,
-                Name = Category.Name,
-                Description = Category.Description
-            });
-        }
-
-        return CategoryDTOs;
+        var categories = await categoryRepository.GetAllAsync();
+        return categories.Select(MapToDTO).ToList();
     }
 
-    public async Task<CategoryGetDTO> UpdateAsync(int id, CategoryGetDTO CategoryDTO)
+    public async Task<CategoryGetDTO> GetByIdAsync(int id)
     {
-        var existingCategory = await CategoryRepository.GetByIdAsync(id);
-        if (existingCategory == null)
-        {
-            throw new Exception($"Category with id {id} not found");
-        }
-        existingCategory.Name = CategoryDTO.Name;
-        existingCategory.Description = CategoryDTO.Description;
-        var updatedCategory = await CategoryRepository.UpdateAsync(existingCategory);
-        return new CategoryGetDTO
-        {
-            Id = updatedCategory.Id,
-            Name = updatedCategory.Name,
-            Description = updatedCategory.Description
-        };
+        var category = await categoryRepository.GetByIdAsync(id);
+        return MapToDTO(category);
     }
+
+    public async Task<CategoryGetDTO> CreateAsync(CategoryCreateDTO dto)
+    {
+        var category = new Category { Name = dto.Name, Description = dto.Description };
+        var created = await categoryRepository.AddAsync(category);
+        return MapToDTO(created);
+    }
+
+    public async Task<CategoryGetDTO> UpdateAsync(int id, CategoryUpdateDTO dto)
+    {
+        var category = await categoryRepository.GetByIdAsync(id);
+        category.Name = dto.Name;
+        category.Description = dto.Description;
+        var updated = await categoryRepository.UpdateAsync(category);
+        return MapToDTO(updated);
+    }
+
+    public Task DeleteAsync(int id) => categoryRepository.DeleteAsync(id);
+
+    private static CategoryGetDTO MapToDTO(Category c) => new()
+    {
+        Id = c.Id,
+        Name = c.Name,
+        Description = c.Description
+    };
 }

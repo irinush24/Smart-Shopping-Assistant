@@ -1,6 +1,0 @@
-@SmartShoppingAssistantLigaAc.Api_HostAddress = http://localhost:5211
-
-GET {{SmartShoppingAssistantLigaAc.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

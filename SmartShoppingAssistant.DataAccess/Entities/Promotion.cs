@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SmartShoppingAssistant.DataAccess.Entities;
 using SmartShoppingAssistant.DataAccess.Entities.Enums;
 
-namespace SmartShoppingAssistant.BusinessLogic.DTOs;
+namespace SmartShoppingAssistant.DataAccess.Entities;
 
-public class PromotionGetDTO
+public class Promotion
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
@@ -17,4 +13,7 @@ public class PromotionGetDTO
     public int? ProductId { get; set; }
     public int? CategoryId { get; set; }
     public bool IsActive { get; set; }
+
+    public Product? Product { get; set; }
+    public Category? Category { get; set; }
 }

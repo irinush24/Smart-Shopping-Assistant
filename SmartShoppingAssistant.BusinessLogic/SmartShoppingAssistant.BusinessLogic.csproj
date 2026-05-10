@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartShoppingAssistantLigaAc.DataAccess\SmartShoppingAssistantLigaAc.DataAccess.csproj" />
+    <ProjectReference Include="..\SmartShoppingAssistant.DataAccess\SmartShoppingAssistant.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
