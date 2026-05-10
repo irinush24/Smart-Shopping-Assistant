@@ -1,0 +1,4 @@
+Include pe categorii
+Then Include in loc de join la promotions
+simplific 1 to 1 la promo cu produs
+1 to 1 promo cu categorie
