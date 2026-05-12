@@ -32,7 +32,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 
 var openAiApiKey = builder.Configuration["OpenAI:ApiKey"]
                    ?? throw new InvalidOperationException("OpenAI:ApiKey is not configured.");
-var openAiModel = builder.Configuration["OpenAI:ModelId"] ?? "gpt-4o";
+var openAiModel = builder.Configuration["OpenAI:ModelId"];
 
 builder.Services.AddSingleton<IChatClient>(
     new OpenAIClient(openAiApiKey)
@@ -43,6 +43,18 @@ builder.Services.AddSingleton<IChatClient>(
         .Build());
 
 builder.Services.AddScoped<IPromotionCheckerAgent, PromotionCheckerAgent>();
+builder.Services.AddScoped<ISuggestionComposerAgent, SuggestionComposerAgent>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        corsPolicyBuilder =>
+        {
+            corsPolicyBuilder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+});
 
 var app = builder.Build();
 

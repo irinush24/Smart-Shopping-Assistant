@@ -10,6 +10,10 @@ public class CartItemRepository(SmartShoppingAssistantDbContext context)
     private IQueryable<CartItem> WithProduct() =>
         GetAllAsQueryable().Include(ci => ci.Product);
 
+    private IQueryable<CartItem> WithProductsWithCategories() =>
+        GetAllAsQueryable().Include(ci => ci.Product)
+            .ThenInclude(p => p.Categories);
+
     public async Task<List<CartItem>> GetAllWithProductAsync()
     {
         return await WithProduct().ToListAsync();
@@ -30,5 +34,10 @@ public class CartItemRepository(SmartShoppingAssistantDbContext context)
     {
         context.CartItems.RemoveRange(context.CartItems);
         await context.SaveChangesAsync();
+    }
+
+    public async Task<List<CartItem>> GetAllWithProductsWithCategoriesAsync()
+    {
+        return await WithProductsWithCategories().ToListAsync();
     }
 }

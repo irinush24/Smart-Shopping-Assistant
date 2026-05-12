@@ -1,6 +1,7 @@
 ﻿using SmartShoppingAssistant.BusinessLogic.DTOs;
 using SmartShoppingAssistant.BusinessLogic.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using SmartShoppingAssistant.BusinessLogic.Models;
 
 namespace SmartShoppingAssistant.Api.Controllers;
 
@@ -62,5 +63,12 @@ public class CartController(ICartService cartService) : ControllerBase
     {
         await cartService.ClearCartAsync();
         return NoContent();
+    }
+
+    [HttpPost("analyze")]
+    public async Task<IActionResult> AnalyzeCart()
+    {
+        var analysisResponse = await cartService.AnalyzeCartAsync();
+        return Ok(analysisResponse);
     }
 }

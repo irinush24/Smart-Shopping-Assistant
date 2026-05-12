@@ -14,7 +14,7 @@ public sealed class SuggestionList
 public sealed class Suggestion
 {
     [JsonPropertyName("productId")]
-    public string ProductId { get; set; }
+    public int ProductId { get; set; }
 
     [JsonPropertyName("productName")]
     public string ProductName { get; set; } = string.Empty;

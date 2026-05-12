@@ -8,4 +8,6 @@ public interface ICartItemRepository : IRepository<CartItem>
     Task<CartItem?> GetByProductIdAsync(int productId);
     Task<CartItem> GetByIdWithProductAsync(int id);
     Task ClearAsync();
+
+    Task<List<CartItem>> GetAllWithProductsWithCategoriesAsync();
 }
