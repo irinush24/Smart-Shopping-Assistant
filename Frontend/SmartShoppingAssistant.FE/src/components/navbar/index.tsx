@@ -1,17 +1,13 @@
 import { AppBar, Toolbar, Button, Box } from "@mui/material"
 import { NavLink, Link } from "react-router-dom";
 import logo from "../../assets/logo.png"
-// import './NavBar.css';
 
 function NavBar()
 {
     // const nav = useNavigate() another option (a hook) can be used with conditions
     // use in the name => hook
-    return <AppBar position="static" color="default">
+    return <AppBar position="static" elevation={0}>
             <Toolbar>
-                <Button component = {NavLink} to="/" variant = "contained">Home</Button>
-                <Button component = {NavLink} to="/categories" variant = "contained">Categories</Button>
-                <Button component = {NavLink} to="/products" variant = "contained">Products</Button>
                 <Link to = "/">
                     <Box
                         component = "img"
@@ -20,6 +16,10 @@ function NavBar()
                         sx = {{ height : 56, mr: 2}}  // inline styling de la MUI
                     />
                 </Link>
+                <Button component = {NavLink} to="/" variant = "text" color="inherit">Home</Button>
+                <Button component = {NavLink} to="/categories" variant = "text" color="inherit">Categories</Button>
+                <Button component = {NavLink} to="/products" variant = "text" color="inherit">Products</Button>
+                <Button component = {NavLink} to="/promotions" variant = "text" color="inherit">Promotions</Button>
             </Toolbar>
         </AppBar>
 }
