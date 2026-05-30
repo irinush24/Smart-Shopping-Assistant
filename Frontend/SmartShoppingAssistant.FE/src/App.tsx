@@ -1,7 +1,7 @@
 import './App.css'
 import NavBar from './components/navbar'
 import { Box } from "@mui/material"
-import {Route, Routes} from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
 import Home from "./components/Home"
 import Categories from './components/Categories'
 import Products from './components/Products'
@@ -10,7 +10,7 @@ import NotFound from './components/NotFound'
 
 function App() {
   return (
-      <Box className="hero">
+      <Box className="app">
         <NavBar/>
           <Routes>
               <Route path = "/" element = {<Home />} />
@@ -24,4 +24,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
