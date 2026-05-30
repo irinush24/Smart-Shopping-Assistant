@@ -37,7 +37,7 @@ export const http = {
         return response.data
     },
     remove: async <T> (path: string): Promise<T> => {
-        const response = await api.get<T>(path)
+        const response = await api.delete<T>(path)
         return response.data
     },
 }

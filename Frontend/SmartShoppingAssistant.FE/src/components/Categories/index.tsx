@@ -1,12 +1,12 @@
 import {Alert, Box, CircularProgress, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material"
 import {useEffect, useState} from "react"
-import type {Category} from "../shared/types/Category"
+import type { Category } from "../shared/types/Category"
 import { categoriesApi } from "../../api/clients/CategoryApiClient";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PageHeader from "../common/PageHeader";
-import CategoryFormDialog from "./CategoryFormDialog";
 import ConfirmDialog from "../common/ConfirmDialog";
+import CategoryFormDialog from "./CategoryFormDialog";
 
 function Categories() {
   const [categories, setCategories] = useState<Category[]>([]);     // List of categories shown in the table

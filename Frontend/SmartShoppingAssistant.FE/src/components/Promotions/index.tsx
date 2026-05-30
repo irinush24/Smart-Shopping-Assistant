@@ -100,11 +100,11 @@ function Promotions()
               {promotions.map((promotion) => (
                 <TableRow key={promotion.id} hover>
                   <TableCell>{promotion.name}</TableCell>
-                  <TableCell>{promotion.promotionType}</TableCell>
-                  <TableCell>{promotion.promotionReward}</TableCell>
+                  <TableCell>{String(promotion.promotionType) === "BuyXGetY" ? "Buy X Get Y" : "Percentage"}</TableCell>
+                  <TableCell>{String(promotion.promotionReward) === "Quantity" ? "Quantity" : "Percentage"}</TableCell>
                   <TableCell>{promotion.threshold}</TableCell>
                   <TableCell>{promotion.rewardValue}</TableCell>
-                  <TableCell>{promotion.isActive}</TableCell>
+                  <TableCell>{String(promotion.isActive) === "true" ? "Active" : "Inactive"}</TableCell>
                   
                   <TableCell align="right">
                     <Tooltip title="Edit">
@@ -128,7 +128,7 @@ function Promotions()
               ))}
               {promotions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={3} align="center">
+                  <TableCell colSpan={7} align="center">
                     No promotions have been added yet.
                   </TableCell>
                 </TableRow>
