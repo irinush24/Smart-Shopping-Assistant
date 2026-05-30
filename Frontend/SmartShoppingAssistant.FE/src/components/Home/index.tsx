@@ -4,10 +4,10 @@ function Home()
 {
     return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h3" gutterBottom>
-        Smart Shopping Assistant
+      <Typography variant="h1" gutterBottom>
+        Handmade Hugs by Iri
       </Typography>
-      <Typography>Welcome! Your shopping assistant starts here.</Typography>
+      <Typography>Welcome!</Typography>
     </Container>
   );
 }

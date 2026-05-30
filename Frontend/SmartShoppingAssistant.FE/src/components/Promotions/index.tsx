@@ -37,8 +37,8 @@ function Promotions()
     }
 
     function handleEdit(promotion : Promotion) {
-        setDeleting(promotion);
-        setConfirmOpen(true);
+        setEditing(promotion);
+        setFormOpen(true);
     }
 
     function handleDeleteClick(promotion : Promotion) {

@@ -12,8 +12,8 @@ function NavBar()
                     <Box
                         component = "img"
                         src = {logo}
-                        alt = "Smart Shopping Assistant Logo"
-                        sx = {{ height : 56, mr: 2}}  // inline styling de la MUI
+                        alt = "Handmade Hugs by Iri Logo"
+                        sx = {{ height : 62, mr: 2}}
                     />
                 </Link>
                 <Button component = {NavLink} to="/" variant = "text" color="inherit">Home</Button>
