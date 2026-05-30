@@ -79,7 +79,7 @@ function Promotions()
       )}
 
       {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 4}}>
           <CircularProgress />
         </Box>
       ) : (
@@ -90,7 +90,7 @@ function Promotions()
                 <TableCell>Name</TableCell>
                 <TableCell>Type</TableCell>
                 <TableCell>Reward Type</TableCell>
-                <TableCell>Threshold</TableCell>
+                <TableCell align="justify">Threshold</TableCell>
                 <TableCell>Reward Value</TableCell>
                 <TableCell>Status</TableCell>
                 <TableCell align="right">Actions</TableCell>
@@ -101,10 +101,10 @@ function Promotions()
                 <TableRow key={promotion.id} hover>
                   <TableCell>{promotion.name}</TableCell>
                   <TableCell>{String(promotion.promotionType) === "BuyXGetY" ? "Buy X Get Y" : "Percentage"}</TableCell>
-                  <TableCell>{String(promotion.promotionReward) === "Quantity" ? "Quantity" : "Percentage"}</TableCell>
-                  <TableCell>{promotion.threshold}</TableCell>
-                  <TableCell>{promotion.rewardValue}</TableCell>
-                  <TableCell>{String(promotion.isActive) === "true" ? "Active" : "Inactive"}</TableCell>
+                  <TableCell align = "justify">{String(promotion.promotionReward) === "Quantity" ? "Quantity" : "Percentage"}</TableCell>
+                  <TableCell align = "justify">{promotion.threshold}</TableCell>
+                  <TableCell align = "justify">{promotion.rewardValue}</TableCell>
+                  <TableCell align = "justify">{String(promotion.isActive) === "true" ? "Active" : "Inactive"}</TableCell>
                   
                   <TableCell align="right">
                     <Tooltip title="Edit">

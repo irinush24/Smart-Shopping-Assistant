@@ -1,4 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 interface PageHeaderProps {
     title: string;
@@ -10,8 +11,10 @@ function PageHeader({title, actionLabel, onAction}: PageHeaderProps)
 {
     return (
         <Box>
-            <Typography>{title}</Typography>
-            <Button onClick = {onAction}>{actionLabel}</Button>
+            <Typography variant="h3">{title}</Typography>
+            <Button variant = "contained" onClick = {onAction} startIcon = {<Add />}>
+                {actionLabel}
+            </Button>
         </Box>
     );
 }
