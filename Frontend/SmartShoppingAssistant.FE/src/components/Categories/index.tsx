@@ -9,8 +9,7 @@ import CategoryFormDialog from "./CategoryFormDialog";
 import ConfirmDialog from "../common/ConfirmDialog";
 
 function Categories() {
-  // lista de categorii afisata in tabel
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);     // List of categories shown in the table
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -118,7 +117,7 @@ function Categories() {
               {categories.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={3} align="center">
-                    No categories yet.
+                    No categories have been added yet.
                   </TableCell>
                 </TableRow>
               )}

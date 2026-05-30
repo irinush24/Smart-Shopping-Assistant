@@ -2,16 +2,12 @@ import { toCategory, type Category } from "../../components/shared/types/Categor
 import type { CategoryInput, CategoryModel } from "../models/CategoryModel"
 import {http} from "../base/http"
 
-
-// Component -> categoriesApi -> http -> server
-
 export const categoriesApi = {
     getAll: async(): Promise <Category[]> => {        
         const data = await http.get<CategoryModel[]>('/Category')
         return data.map(toCategory)
     },
     
-    // to do get by id
     getById: async (id: number): Promise<Category> => {
         const data = await http.get<CategoryModel>(`/Category/${id}`)
         return toCategory(data)
