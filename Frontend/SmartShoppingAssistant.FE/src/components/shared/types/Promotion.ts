@@ -7,7 +7,9 @@ export interface Promotion{
     promotionReward: PromotionReward,
     threshold: number,
     rewardValue: number,
-    isActive: boolean
+    productId: number | null,
+    categoryId: number | null,
+    isActive: boolean,
 }
 
 export function toPromotion(dto: PromotionModel) : Promotion
@@ -19,6 +21,8 @@ export function toPromotion(dto: PromotionModel) : Promotion
         promotionReward: dto.promotionReward,
         threshold: dto.threshold,
         rewardValue: dto.rewardValue,
+        productId: dto.productId,
+        categoryId: dto.categoryId,
         isActive: dto.isActive
     }
 }

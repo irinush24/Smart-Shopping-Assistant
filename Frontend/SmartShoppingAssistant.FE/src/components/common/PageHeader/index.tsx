@@ -10,7 +10,7 @@ interface PageHeaderProps {
 function PageHeader({title, actionLabel, onAction}: PageHeaderProps)
 {
     return (
-        <Box>
+        <Box sx = {{display : "flex", justifyContent : "space-between"}}>
             <Typography variant="h3">{title}</Typography>
             <Button variant = "contained" onClick = {onAction} startIcon = {<Add />}>
                 {actionLabel}

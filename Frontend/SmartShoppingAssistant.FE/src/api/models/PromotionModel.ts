@@ -6,6 +6,8 @@ export interface PromotionModel
     promotionReward: PromotionReward,
     threshold: number,
     rewardValue: number,
+    productId: number | null,
+    categoryId: number | null,
     isActive: boolean
 }
 
@@ -16,6 +18,8 @@ export interface PromotionInput
     promotionReward: PromotionReward,
     threshold: number,
     rewardValue: number,
+    productId: number | null,
+    categoryId: number | null,
     isActive: boolean
 }
 

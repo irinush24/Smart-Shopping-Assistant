@@ -83,19 +83,27 @@ function Products()
                     <Table>
                         <TableHead>
                             <TableRow>
+                                <TableCell>Image</TableCell>
                                 <TableCell>Name</TableCell>
                                 <TableCell>Price</TableCell>
-                                <TableCell>Description</TableCell>
+                                <TableCell>Categories</TableCell>
                                 <TableCell align="right">Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {products.map((product) => (
-                                <TableRow key={product.id}>
+                                <TableRow key={product.id} hover>
+                                    <TableCell>
+                                        <Box
+                                            component = "img"
+                                            src = {product.imageUrl}
+                                            alt = {product.name}
+                                            sx = {{width: 56, height: 56, objectFit: 'cover'}}
+                                        />
+                                    </TableCell>
                                     <TableCell>{product.name}</TableCell>
-                                    <TableCell>${product.price.toFixed(2)}</TableCell>
+                                    <TableCell>${product.priceLabel}</TableCell>
                                     <TableCell>{product.description}</TableCell>
-                                    
                                     <TableCell align="right">
                                         <Tooltip title="Edit">
                                             <IconButton
@@ -118,7 +126,7 @@ function Products()
                             ))}
                             {products.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={4} align="center">
+                                <TableCell colSpan={5} align="center">
                                     No products have been added yet.
                                 </TableCell>
                             </TableRow>

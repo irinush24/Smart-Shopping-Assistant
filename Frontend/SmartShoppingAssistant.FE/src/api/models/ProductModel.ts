@@ -4,7 +4,8 @@ export interface ProductModel
     name: string,
     description?: string,
     imageUrl?: string,
-    price: number
+    price: number,
+    categories: string[]
 }
 
 export interface ProductInput
@@ -12,5 +13,6 @@ export interface ProductInput
     name: string,
     description?: string,
     imageUrl?: string,
-    price: number
+    price: number,
+    categoryIds: number[]
 }
