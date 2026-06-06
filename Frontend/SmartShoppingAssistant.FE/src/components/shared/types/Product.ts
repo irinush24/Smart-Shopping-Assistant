@@ -19,7 +19,7 @@ export function toProduct(dto: ProductModel) : Product
         description: dto.description ?? '',
         imageUrl: dto.imageUrl,
         price: dto.price,
-        priceLabel: `$${dto.price.toFixed(2)} RON`,
+        priceLabel: `${dto.price.toFixed(2)} RON`,
         categories: dto.categories,
         categoriesLabel: dto.categories.join(', '),
     }

@@ -30,8 +30,8 @@ function PromotionFormDialog ({
     const [productId, setProductId] = useState<number | ''>(promotion?.productId ?? '')
 
     // Enums typing and setting default values
-    const [promotionType, setPromotionType] = useState<PromotionType>(promotion?.promotionType ?? 'Quantity')
-    const [promotionReward, setPromotionReward] = useState<PromotionReward>(promotion?.promotionReward ?? 'PercentDiscount')
+    const [promotionType, setPromotionType] = useState<PromotionType>(promotion?.type as PromotionType?? 'Quantity')
+    const [promotionReward, setPromotionReward] = useState<PromotionReward>(promotion?.reward as PromotionReward?? 'PercentDiscount')
 
     // Keeping isActive as a true boolean
     const [isActive, setIsActive] = useState<boolean>(promotion?.isActive ?? true)
@@ -48,8 +48,8 @@ function PromotionFormDialog ({
         setError('')
         try {
             const data : PromotionInput = { name,
-                promotionType,
-                promotionReward,
+                type : promotionType,
+                reward : promotionReward,
                 threshold : Number(threshold),
                 rewardValue : Number(rewardValue),
                 productId : productId === '' ? null : productId,
@@ -133,7 +133,14 @@ function PromotionFormDialog ({
                         >
                             <MenuItem value = "">None</MenuItem>
                             {products.map((product) => (
-                                <MenuItem key = {productId} value = {productId}>
+                                <MenuItem
+                                    key={product.id} 
+                                    value={product.id}
+                                    onClick={() => {
+                                        if (productId === product.id)
+                                            setProductId('');
+                                    }}
+                                >
                                     {product.name}
                                 </MenuItem>
                             ))}
@@ -152,7 +159,14 @@ function PromotionFormDialog ({
                         >
                             <MenuItem value = "">None</MenuItem>
                             {categories.map((category) => (
-                                <MenuItem key = {category.id} value = {category.id}>
+                                <MenuItem 
+                                    key = {category.id} 
+                                    value = {category.id}
+                                    onClick={() => {
+                                        if (categoryId === category.id)
+                                            setCategoryId('');
+                                    }}
+                                >
                                     {category.name}
                                 </MenuItem>
                             ))}

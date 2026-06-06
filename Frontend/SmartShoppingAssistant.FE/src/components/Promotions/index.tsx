@@ -1,19 +1,24 @@
 import {Alert, Box, CircularProgress, Container, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip} from "@mui/material"
 import {useEffect, useState} from "react"
-import type {Promotion} from "../shared/types/Promotion"
+import {toPromotion, type Promotion} from "../shared/types/Promotion"
 import { promotionsApi } from "../../api/clients/PromotionApiClient";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PageHeader from "../common/PageHeader";
 import PromotionFormDialog from "./PromotionFormDialog";
 import ConfirmDialog from "../common/ConfirmDialog";
-
+import type { Product } from "../shared/types/Product";
+import type { Category } from "../shared/types/Category";
+import { productsApi } from "../../api/clients/ProductApiClient";
+import { categoriesApi } from "../../api/clients/CategoryApiClient";
 
 function Promotions()
 {
     const [promotions, setPromotions] = useState<Promotion[]>([]);      // List of promotions shown inside the table
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const [formOpen, setFormOpen] = useState(false);
     const [editing, setEditing] = useState<Promotion | null> (null);
@@ -24,7 +29,8 @@ function Promotions()
         promotionsApi
         .getAll()
         .then((data) => {
-            setPromotions(data);
+            console.log("Fetched promotions:", data);
+            setPromotions(data.map(toPromotion));
             setError("");
         })
         .catch((err) => setError((err as Error).message))
@@ -62,7 +68,21 @@ function Promotions()
 
     useEffect(() => {
         loadPromotions();
-    }, []);
+        productsApi.getAll().then(setProducts).catch((err) => setError((err as Error).message));
+        categoriesApi.getAll().then(setCategories).catch((err) => setError((err as Error).message));
+    }, [])
+
+    function describeScope(promotion: Promotion): string {
+      if (promotion.productId !== null) {
+        const product = products.find((p) => p.id === promotion.productId);
+        return `Product: ${product ? product.name : promotion.productId}`
+      }
+      if(promotion.categoryId !== null) {
+        const category = categories.find((c) => c.id === promotion.categoryId);
+        return `Category: ${category ? category.name : promotion.categoryId}`
+      }
+      return "Whole cart";
+    }
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -89,10 +109,10 @@ function Promotions()
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell>Type</TableCell>
-                <TableCell>Reward Type</TableCell>
-                <TableCell align="justify">Threshold</TableCell>
-                <TableCell>Reward Value</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell>Threshold</TableCell>
+                <TableCell>Reward</TableCell>
+                <TableCell>Applies to</TableCell>
+                <TableCell>Active</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -100,12 +120,11 @@ function Promotions()
               {promotions.map((promotion) => (
                 <TableRow key={promotion.id} hover>
                   <TableCell>{promotion.name}</TableCell>
-                  <TableCell>{String(promotion.promotionType) === "BuyXGetY" ? "Buy X Get Y" : "Percentage"}</TableCell>
-                  <TableCell align = "justify">{String(promotion.promotionReward) === "Quantity" ? "Quantity" : "Percentage"}</TableCell>
-                  <TableCell align = "justify">{promotion.threshold}</TableCell>
-                  <TableCell align = "justify">{promotion.rewardValue}</TableCell>
-                  <TableCell align = "justify">{String(promotion.isActive) === "true" ? "Active" : "Inactive"}</TableCell>
-                  
+                  <TableCell>{promotion.typeLabel}</TableCell>
+                  <TableCell>{promotion.threshold}</TableCell>
+                  <TableCell>{promotion.rewardLabel}</TableCell>
+                  <TableCell>{describeScope(promotion)}</TableCell>
+                  <TableCell>{promotion.isActive ? "Yes" : "No"}</TableCell>
                   <TableCell align="right">
                     <Tooltip title="Edit">
                       <IconButton
@@ -129,7 +148,7 @@ function Promotions()
               {promotions.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} align="center">
-                    No promotions have been added yet.
+                    No promotions yet.
                   </TableCell>
                 </TableRow>
               )}
@@ -140,6 +159,8 @@ function Promotions()
       {formOpen && (
         <PromotionFormDialog
           promotion={editing}
+          products={products}
+          categories={categories}
           onClose={() => setFormOpen(false)}
           onSaved={() => {
             setFormOpen(false);

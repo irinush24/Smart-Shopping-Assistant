@@ -87,6 +87,7 @@ function Products()
                                 <TableCell>Name</TableCell>
                                 <TableCell>Price</TableCell>
                                 <TableCell>Categories</TableCell>
+                                <TableCell>Description</TableCell>
                                 <TableCell align="right">Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -102,7 +103,8 @@ function Products()
                                         />
                                     </TableCell>
                                     <TableCell>{product.name}</TableCell>
-                                    <TableCell>${product.priceLabel}</TableCell>
+                                    <TableCell>{product.priceLabel}</TableCell>
+                                    <TableCell>{product.categories.join(", ")}</TableCell>
                                     <TableCell>{product.description}</TableCell>
                                     <TableCell align="right">
                                         <Tooltip title="Edit">
