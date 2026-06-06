@@ -9,6 +9,7 @@ import {
     CircularProgress,
     Container,
     Checkbox,
+    Divider,
     InputLabel,
     FormControl,
     MenuItem,
@@ -17,6 +18,8 @@ import {
     Typography,
     FormGroup,
     FormControlLabel,
+    Slider,
+    Switch
 } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import {useCart} from "../../context/CartContext/cart-context"
@@ -36,6 +39,20 @@ function Shop() {
     const [search, setSearch] = useState("");
     const [sort, setSort] = useState("A-to-Z");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
+    const [hasImageFilter, setHasImageFilter] = useState(false);
+
+    const minPrice = useMemo(() =>
+    {
+        if(products.length === 0) return 0;
+        return Math.min(...products.map(p => p.price));
+    }, [products]);
+
+    const maxPrice = useMemo(() => 
+    {
+        if(products.length === 0) return 10000;
+        return Math.max(...products.map(p => p.price));
+    }, [products]);
 
     const {addItem} = useCart();
 
@@ -50,8 +67,18 @@ function Shop() {
             } else {
                 return [...prev, categoryId];
             }
-        });
-    };
+        })
+    }
+
+    const handleSliderChange = (newValue: number | number[]) => {
+        priceRange[0] = (newValue as number[])[0];
+        priceRange[1] = (newValue as number[])[1];
+        setPriceRange([...priceRange]);
+    }
+
+    const handleImage = () => {
+        setHasImageFilter((prev : boolean) => !prev);
+    }
 
     // Pipelining for the products
 
@@ -65,9 +92,14 @@ function Shop() {
 
             // Category filter
             const matchesCategory = selectedCategories.length === 0 || selectedCategories.some((selectedName) => product.categories.includes(selectedName));
-            return matchesCategory && matchesSearch;
+
+            const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
+
+            const matchesImage = hasImageFilter ? Boolean(product.imageUrl) : true;
+
+            return matchesCategory && matchesSearch && matchesPrice && matchesImage;            
         });
-    }, [products, search, selectedCategories]);
+    }, [products, search, selectedCategories, priceRange, hasImageFilter]);
 
 
     // Step 2: Sort the filtered products
@@ -95,6 +127,8 @@ function Shop() {
             .getAll()
             .then((data) => {
                 setProducts(data);
+                if(data.length > 0)
+                    setPriceRange([minPrice, maxPrice]);
                 setError("");
             })
             .catch((err) => setError((err as Error).message))
@@ -132,7 +166,7 @@ function Shop() {
                     mb: 2,
                 }}
             >
-                <Typography variant="h4">Shop</Typography>
+                <Typography variant="h2">Shop</Typography>
             </Box>
             <Box
                 sx={{
@@ -177,7 +211,10 @@ function Shop() {
                     <Box sx = {{width: '250px', flexShrink: 0}}>
 
                         {/* Filters sidebar positioned on the left*/}
-                        <Typography variant="h6" sx = {{mb: 1}}>Filters</Typography>
+                        <Typography variant="h4" sx = {{mb: 1}}>Filters</Typography>
+
+                        <Divider variant = "fullWidth" sx = {{ mb: 2, mt: 1}}></Divider>
+                        <Typography variant="h6" sx = {{mb: 1}}>Categories</Typography>
                         <FormGroup>
                             {categories.map((category) => (
                                 <FormControlLabel
@@ -192,8 +229,29 @@ function Shop() {
                                 />
                             ))}
                         </FormGroup>
-                    </Box>
-                    
+
+                        <Divider variant = "fullWidth" sx = {{ mb: 2, mt: 1}}></Divider>
+                        <Typography variant="h6" sx = {{mb: 5}}>Price Range</Typography>
+                        <Slider 
+                            getAriaLabel={() => 'Price range'}
+                            value = {priceRange}
+                            onChange={(_, newValue) => handleSliderChange(newValue as number[])}
+                            valueLabelDisplay="on"
+                            min = {minPrice}
+                            max = {maxPrice}
+                        />
+
+                        <Divider variant = "fullWidth" sx = {{mb: 2, mt: 1}}></Divider>
+                        <Typography variant="h6" sx = {{mb:1}}>Image</Typography>
+                        <FormControl>
+                            <FormControlLabel control = {
+                                <Switch 
+                                    checked = {hasImageFilter}
+                                    onChange = {handleImage}
+                                />} 
+                            label = "Has image"/>
+                        </FormControl>
+                    </Box> 
 
                     {/* Products grid positioned on the right*/}
                     <Box 

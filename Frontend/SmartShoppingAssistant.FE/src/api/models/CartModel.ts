@@ -8,9 +8,9 @@ export interface CartItem {
 }
 
 export interface AppliedPromotion {
-  promotionId: number
   promotionName: string
-  discount: number
+  discountAmount: number
+  discountLabel: string
 }
 
 export interface CartModel {

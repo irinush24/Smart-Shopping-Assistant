@@ -22,7 +22,7 @@ function CartDrawer() {
     <Drawer anchor="right" open={open} onClose={closeCart}>
       <Box
         sx={{
-          width: 800,
+          width: 400,
           p: 2,
           height: '100%',
           display: 'flex',
@@ -115,7 +115,7 @@ function CartDrawer() {
               </Box>
               {cart.appliedPromotions.map((promotion) => (
                 <Box
-                  key={promotion.promotionId}
+                  key={promotion.promotionName}
                   sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}
                 >
                   <Typography color="success.main">{promotion.promotionName}</Typography>
@@ -125,7 +125,7 @@ function CartDrawer() {
               <Divider sx={{ my: 1 }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="h6">Total</Typography>
-                <Typography variant="h6">{cart.totalLabel}</Typography>
+                <Typography variant="body1">{cart.totalLabel}</Typography>
               </Box>
             </Box>
           </>

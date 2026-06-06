@@ -1,25 +1,18 @@
-import type { CartModel } from "../../../api/models/CartModel";
+import type { CartModel, AppliedPromotion } from "../../../api/models/CartModel";
 
-function money(value: number): string {
-  return `${value.toFixed(2)} RON`
+function money(value: number | null | undefined): string {
+  const safeValue = Number(value) || 0;
+  return `${safeValue.toFixed(2)} RON`
 }
 
 export interface CartItem {
   id: number
-  productId: number
   productName: string
   unitPrice: number
   unitPriceLabel: string
   quantity: number
   subtotal: number
   subtotalLabel: string
-}
-
-export interface AppliedPromotion {
-  promotionId: number
-  promotionName: string
-  discount: number
-  discountLabel: string
 }
 
 export interface Cart {
@@ -49,10 +42,9 @@ export function toCartModel(dto: CartModel): Cart {
     subtotal: dto.subtotal,
     subtotalLabel: money(dto.subtotal),
     appliedPromotions: dto.appliedPromotions.map((promotion) => ({
-      promotionId: promotion.promotionId,
       promotionName: promotion.promotionName,
-      discount: promotion.discount,
-      discountLabel: money(promotion.discount),
+      discountAmount: promotion.discountAmount,
+      discountLabel: money(promotion.discountAmount),
     })),
     totalDiscount: dto.totalDiscount,
     totalDiscountLabel: money(dto.totalDiscount),

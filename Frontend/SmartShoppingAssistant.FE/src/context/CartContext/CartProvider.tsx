@@ -12,8 +12,16 @@ function CartProvider({ children }: { children: ReactNode }) {
     };
 
     async function addItem(productId: number, quantity: number) {
-        await cartApi.addItem({ productId, quantity });
-        loadCart();
+        try
+        {
+            await cartApi.addItem({ productId, quantity });
+            loadCart();
+            setOpen(true);
+        }
+        catch(err)
+        {
+            console.log("Failed to add item to cart: ", err);
+        }
     }
 
     async function updateQuantity(productId: number, quantity: number) {
