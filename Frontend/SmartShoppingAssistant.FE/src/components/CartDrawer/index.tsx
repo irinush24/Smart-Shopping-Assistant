@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Divider,
   Drawer,
   IconButton,
@@ -11,12 +12,17 @@ import AddIcon from '@mui/icons-material/Add'
 import RemoveIcon from '@mui/icons-material/Remove'
 import DeleteIcon from '@mui/icons-material/Delete'
 import CloseIcon from '@mui/icons-material/Close'
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome'
 import { useCart } from '../../context/CartContext/cart-context';
+import { useState } from 'react';
+import AnalyzeDialog from './AnalyzeDialog'
 
 function CartDrawer() {
   const { cart, open, closeCart, updateQuantity, removeProduct } = useCart()
 
   const isEmpty = cart === null || cart.items.length === 0
+
+  const [analyzeOpen, setAnalyzeOpen] = useState(false);
 
   return (
     <Drawer anchor="right" open={open} onClose={closeCart}>
@@ -127,10 +133,22 @@ function CartDrawer() {
                 <Typography variant="h6">Total</Typography>
                 <Typography variant="body1">{cart.totalLabel}</Typography>
               </Box>
+
+              <Button
+                fullWidth
+                variant='outlined'
+                startIcon = {<AutoAwesomeIcon/>}
+                onClick = { () => setAnalyzeOpen(true)}
+                sx = {{mt : 2}}
+                > AI Analyze 
+              </Button>
             </Box>
           </>
         )}
       </Box>
+      {
+        analyzeOpen && <AnalyzeDialog onClose={() => setAnalyzeOpen(false)}/>
+      }
     </Drawer>
   )
 }
