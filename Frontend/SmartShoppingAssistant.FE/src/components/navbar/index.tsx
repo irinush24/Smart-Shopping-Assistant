@@ -7,13 +7,21 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 
 function NavBar()
 {
-    const [mode, setMode] = useState<"user" | "admin">("user")
-    const { cart, openCart } = useCart();
+    const [mode, setMode] = useState<"user" | "admin">(() => {
+        return (localStorage.getItem("userRole") as "user" | "admin") || "user"
+    })
 
+    const { cart, openCart } = useCart();
     const navigate = useNavigate();
-    const handleModeChange = (_event : React.MouseEvent<HTMLElement>, value: "user" | "admin") => {
-       setMode(value)
-       navigate('/')
+    const handleModeChange = (_event : React.MouseEvent<HTMLElement>, value: "user" | "admin" | null) => {
+        // Toggle groups to pass "null" if you click the button that is already active
+        if(value !== null)
+        {
+            setMode(value)
+            localStorage.setItem("userRole", value);    // Save the value for the AdminRoute
+            navigate('/')
+        }
+       
     }
 
     return (<AppBar position="static" elevation={0}>

@@ -10,6 +10,7 @@ import Products from './components/Products'
 import Promotions from './components/Promotions'
 import NotFound from './components/NotFound'
 import CartProvider from './context/CartContext/CartProvider'
+import AdminRoute from './components/common/AdminRoute'
 
 function App() {
   return (
@@ -17,12 +18,17 @@ function App() {
       <Box className="app">
         <NavBar/>
         <Routes>
+            {/*Public routes that both roles can access*/}
             <Route path = "/" element = {<Home />} />
             <Route path = "/shop" element = {<Shop />} />
-            <Route path = "/categories" element = {<Categories />} />
-            <Route path = "/products" element = {<Products />} />      
-            <Route path = "/promotions" element = {<Promotions />} />        
             <Route path = "*" element = {<NotFound />} />
+
+            {/*Protected Admin routes that are wrapped inside the guard*/}
+            <Route element = {<AdminRoute/>}>
+              <Route path = "/categories" element = {<Categories />} />
+              <Route path = "/products" element = {<Products />} />      
+              <Route path = "/promotions" element = {<Promotions />} />        
+            </Route>
         </Routes>
         <CartDrawer />
       </Box>
