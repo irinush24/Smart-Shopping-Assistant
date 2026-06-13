@@ -154,7 +154,6 @@ public class CartService(ICartItemRepository cartItemRepository, IProductReposit
 
         var item = new CartItem { ProductId = dto.ProductId, Quantity = dto.Quantity };
         await cartItemRepository.AddAsync(item);
-        var added = await cartItemRepository.GetByIdWithProductAsync(item.Id);
         return await GetCartAsync();
     }
 
@@ -204,21 +203,37 @@ public class CartService(ICartItemRepository cartItemRepository, IProductReposit
 
         await result.TrySendMessageAsync(new TurnToken(emitEvents: true));
         
-        var jsonBuilder = new System.Text.StringBuilder();
+        // Create separate string builders to capture separate outputs
+        var promotionJsonBuilder = new System.Text.StringBuilder();
+        var suggestionJsonBuilder = new System.Text.StringBuilder();
 
         await foreach (var message in result.WatchStreamAsync())
         {
-            if(message is AgentResponseUpdateEvent update && update.ExecutorId.StartsWith("SuggestionComposer"))
+            // Capture the Checker's Output (Summary, Savings etc.)
+            if(message is AgentResponseUpdateEvent update)
             {
-                jsonBuilder.Append(update.Update.Text);
+                if(update.ExecutorId.StartsWith("PromotionChecker"))
+                    promotionJsonBuilder.Append(update.Update.Text);
+                else if(update.ExecutorId.StartsWith("SuggestionComposer"))
+                    suggestionJsonBuilder.Append(update.Update.Text);
             }
+            // Capture the Composer's Output (The actual suggestions)
             else if(message is WorkflowErrorEvent errorEvent)
             {
                 throw new InvalidOperationException(errorEvent.Exception?.Message);
             }
         }
 
-        var json = jsonBuilder.ToString();
-        return JsonSerializer.Deserialize<PromotionAnalysis>(json) ?? throw new InvalidOperationException("Failed to deserialize promotion analysis.");
+        // Deserialize them independently
+        var checkerJson = promotionJsonBuilder.ToString();
+        var composerJson = promotionJsonBuilder.ToString();
+
+        var promotionData = JsonSerializer.Deserialize<PromotionAnalysis>(checkerJson) ?? new PromotionAnalysis();
+        var suggestionsData = JsonSerializer.Deserialize<SuggestionList>(composerJson) ?? new SuggestionList();
+
+        // Merge by attaching the suggestions to the main analysis object
+        promotionData.Suggestions = suggestionsData.Suggestions;
+
+        return promotionData;
     }
 }

@@ -25,9 +25,11 @@ public sealed class PromotionSuggestion
     public string Name { get; set; } = "";
 
     [JsonPropertyName("price")]
+    [Description("The exact total price of the ADDITIONAL items the user needs to add to trigger the promotion. Do NOT put the price of a single unit here.")]
     public decimal Price { get; set; }
 
     [JsonPropertyName("quantity")]
+    [Description("The exact number of ADDITIONAL items the user needs to add to trigger the promotion. Do NOT put the current cart quantity here.")]
     public int Quantity { get; set; }
 
     [JsonPropertyName("reason")]

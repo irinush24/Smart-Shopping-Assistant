@@ -8,20 +8,5 @@ namespace SmartShoppingAssistant.BusinessLogic.Models;
 public sealed class SuggestionList
 {
     [JsonPropertyName("suggestions")]
-    public List<Suggestion> Suggestions { get; set; } = [];
-}
-
-public sealed class Suggestion
-{
-    [JsonPropertyName("productId")]
-    public int ProductId { get; set; }
-
-    [JsonPropertyName("productName")]
-    public string ProductName { get; set; } = string.Empty;
-
-    [JsonPropertyName("reason")]
-    public string Reason { get; set; } = string.Empty;
-
-    [JsonPropertyName("categoryId")]
-    public int CategoryId { get; set; }
+    public List<PromotionSuggestion> Suggestions { get; set; } = [];
 }

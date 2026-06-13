@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, Divider, LinearProgress, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, Dialog, DialogContent, DialogTitle, Divider, IconButton, LinearProgress, Stack, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Analysis, Suggestion } from "../../shared/types/Analysis";
 import { useCart } from "../../../context/CartContext/cart-context"
@@ -6,6 +6,7 @@ import { cartApi } from "../../../api/clients/CartApiClient";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CheckIcon from "@mui/icons-material/Check"
 import CloseIcon from "@mui/icons-material/Close"
+import { CloseOutlined } from "@mui/icons-material";
 
 interface AnalyzeDialogProps{
     onClose: () => void
@@ -72,11 +73,36 @@ function AnalyzeDialog({onClose}: AnalyzeDialogProps)
         setDecisions((current) => ({...current, [suggestion.productId]: "declined"}))
     }
 
+    // Automatic closing of the dialog once the user has accepted or declined all of the promotions
+    useEffect(() => {
+        if(!analyze || loading) return;
+
+        const actionableSuggestions = analyze.suggestions.filter(s => s.quantity > 0);
+
+        if (actionableSuggestions.length === 0) return;
+
+        const allDecided = actionableSuggestions.every((suggestion) => decisions[suggestion.productId] !== undefined);
+
+        if(allDecided)
+        {
+            const timer = setTimeout(() => {
+                onClose();
+            }, 800);        // ms delay for the user to see the final UI update
+
+            return () => clearTimeout(timer);   // cleanup
+        }
+    }, [decisions, analyze, loading, onClose]);
+
     return (
         <Dialog open onClose = {onClose}>
-            <DialogTitle sx = {{display: "flex", alignItems: "center", gap: 1}}>
+            <Box sx ={{display: 'flex', justifyContent: 'space-between', flexDirection: 'row', pt: 1}}>
+                <DialogTitle sx = {{display: "flex", alignItems: "center", gap: 1}}>
                 <AutoAwesomeIcon color = 'primary'/>
                 AI Cart Analysis</DialogTitle>
+                <IconButton onClick={onClose} sx={{mr: 2}}>
+                    <CloseOutlined fontSize = "medium"/>
+                </IconButton>
+            </Box>
                 <DialogContent>
                     {loading && (<Box sx = {{py: 4, textAlign: "center"}}>
                                     <Typography>
@@ -94,11 +120,11 @@ function AnalyzeDialog({onClose}: AnalyzeDialogProps)
                             <Typography>{analyze.summary}</Typography>
                             <Divider/>
 
-                            {analyze.suggestions.length === 0 && (
+                            {analyze.suggestions.filter(s => s.quantity > 0).length === 0 && (
                                 <Typography color = "text.secondary">No suggestions for this cart.</Typography>
                             )}
 
-                            {analyze.suggestions.map((suggestion) => {
+                            {analyze.suggestions.filter((suggestion) => suggestion.quantity > 0).map((suggestion) => {
                                 const decision = decisions[suggestion.productId]
                                 return (
                                     <Box key = {suggestion.productId} sx = {{
@@ -110,7 +136,7 @@ function AnalyzeDialog({onClose}: AnalyzeDialogProps)
                                         <Box
                                             sx = {{display: "flex", justifyContent: "space-between"}}
                                         >
-                                            <Typography variant="subtitle1">
+                                            <Typography variant="h4">
                                                 {suggestion.name} x {suggestion.quantity}
                                             </Typography>
                                             <Typography variant="subtitle1">
@@ -126,8 +152,8 @@ function AnalyzeDialog({onClose}: AnalyzeDialogProps)
                                             <Typography variant="body2" 
                                             color="success"
                                             sx = {{mt: 0.5}}>
-                                            {suggestion.savingsLabel}
-                                        </Typography>
+                                                Total savings: {suggestion.savingsLabel}
+                                            </Typography>
                                         )}
 
                                         <Box sx = {{mt: 1.5}}>

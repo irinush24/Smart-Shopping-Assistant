@@ -22,13 +22,20 @@ public class SuggestionComposerAgent(IChatClient chatClient, IProductService pro
                     Instructions = $"""
                         You compose shopping suggestions. Here is the current cart:
                         {cartJson}
+    
                         Here are the product categories:
                         {categoriesJson}
+    
                         Follow these rules strictly when composing suggestions:
-                        1. Search for relevant products based on the items currently in the cart and the available categories.
-                        2. Prioritize suggesting products that help activate the "Near-Miss Promotions" (e.g., "Mai adauga 1 produs pentru reducere").
-                        3. You MUST return a MAXIMUM of 5 suggestions. Do not exceed this limit under any circumstances.
-                        4. Write the "reason" for the suggestion based on the rules above.
+                        1. You MUST call the `GetProductsForCategory` tool to find real products to suggest.
+                        2. Prioritize suggesting products that help activate "Near-Miss Promotions".
+                        3. You MUST populate ALL fields in the JSON response for every suggestion:
+                           - `productId`: Use the exact ID of the product.
+                           - `name`: Use the exact name of the product.
+                           - `price`: Use the exact price of the product.
+                           - `quantity`: You MUST calculate (Target Amount - Current Cart Amount). Output ONLY the missing number of items the user still needs to add. (e.g., If the promo requires 5, and they have 1, the quantity MUST be 4).
+                        4. Write a clear `reason`
+                        5. If a promotion is already fully triggered (meaning required additional quantity is 0), DO NOT generate a suggestion for it. Only generate a suggestions where the user actually needs to add 1 or more items.
                         """,
                     ResponseFormat = ChatResponseFormat.ForJsonSchema<SuggestionList>(),
                     Tools =
