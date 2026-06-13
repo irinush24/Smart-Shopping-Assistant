@@ -13,6 +13,7 @@ import {
   Select,
   Stack,
   TextField,
+  Typography
 } from '@mui/material'
 import { categoriesApi } from '../../../api/clients/CategoryApiClient';
 import { productsApi } from '../../../api/clients/ProductApiClient';
@@ -114,16 +115,35 @@ function ProductFormDialog({
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
             fullWidth
+            sx ={{ "& .MuiOutlinedInput-root": {borderRadius: "30px"} }}
           />
 
-          {imageUrl !== '' && (
-            <Box
-              component="img"
-              src={imageUrl}
-              alt="Preview"
-              sx={{ width: 80, height: 80, objectFit: 'cover' }}
-            />
-          )}
+          <Box sx ={{
+            height: 200,
+            bgcolor: "background.default",
+            borderRadius: 4,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            border: "2px dashed #ffb3c6"
+          }}>
+            {imageUrl ? (
+                <Box
+                  component="img"
+                  src = {imageUrl}
+                  alt = "Preview"
+                  sx = {{width: "100%", height: "100%", objectFit: "cover"}}
+                  onError = {(e) => {
+                    // Replaces borken image icons in case of a typo
+                    (e.target as HTMLImageElement).src = "/product_images/placeholder.JPG";
+                  }}
+                />
+              ) : (
+                <Typography color = "text.secondary">Image preview will appear here</Typography>
+              )}
+
+          </Box>
 
           <FormControl fullWidth>
             <InputLabel>Categories</InputLabel>

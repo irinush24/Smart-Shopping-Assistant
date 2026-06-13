@@ -178,7 +178,12 @@ function Shop() {
                 label="Search products"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                sx={{ mb: 2, width: "75%"}}
+                sx={{ mb: 2, width: "75%",
+                    "& .MuiOutlinedInput-root":{
+                        bgcolor: "background.paper",
+                        borderRadius: "50px"
+                    }
+                }}
                 />
 
                 <FormControl sx = {{mb:2, width: "23%"}}>
@@ -189,6 +194,7 @@ function Shop() {
                         label="Sort by:"
                         value={sort}
                         onChange={(e) => setSort(e.target.value)}
+                        sx={{bgcolor: "background.paper", borderRadius:"50px"}}
                     >
                         <MenuItem value={"A-to-Z"}>A-Z</MenuItem>
                         <MenuItem value={"Z-to-A"}>Z-A</MenuItem>
@@ -255,45 +261,67 @@ function Shop() {
 
                     {/* Products grid positioned on the right*/}
                     <Box 
-                        sx={{
-                            display: 'grid',
-                            gap: 2,
+                        sx = {{
                             flexGrow: 1,
-                            alignContent: 'start',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))'
+                            maxHeight: "100vh",
+                            overflowY: "auto",
+                            pr: 1,
+                            "&::-webkit-scrollbar": {
+                                    width: "10px",
+                                },
+
+                                "&::-webkit-scrollbar-track": {
+                                    backgroundColor: "#fff0f3",
+                                    borderRadius: "10px",
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                    backgroundColor: "ffb3c6",
+                                    borderRadius: "10px",
+                                },
+                                "&::-webkit-scrollbar-thumb-hover": {
+                                    backgroundColor: "#ff4d6d",
+                                }
                         }}>
-                        {sortedProducts.map((product) => (
-                            <Card
-                                key={product.id}
-                                sx={{display: 'flex', flexDirection: 'column'}}
-                            >
-                                <CardMedia
-                                    component="img"
-                                    height="160"
-                                    image={product.imageUrl}
-                                    alt={product.name}
-                                    sx={{ objectFit: 'cover' }}
-                                />
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                    <Typography variant="h6">{product.name}</Typography>
-                                    <Typography variant="body2" color="textSecondary">{product.description}</Typography>
-                                    <Typography variant="body1" sx= {{ pt: 1 }}>{product.priceLabel}</Typography>
-                                </CardContent>
-                                <CardActions>
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        startIcon={<AddShoppingCartIcon />}
-                                        onClick={() => handleAddToCart(product)}
-                                    >
-                                        Add to Cart
-                                    </Button>
-                                </CardActions>
-                            </Card>
-                        ))}
-                        {sortedProducts.length === 0 && (
-                            <Typography>No products found.</Typography>
-                        )}
+                        <Box 
+                            sx={{
+                                display: 'grid',
+                                gap: 2,
+                                alignContent: 'start',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',                                
+                            }}>
+                            {sortedProducts.map((product) => (
+                                <Card
+                                    key={product.id}
+                                    sx={{display: 'flex', flexDirection: 'column', height: "100%"}}
+                                >
+                                    <CardMedia
+                                        component="img"
+                                        height="280"
+                                        image={product.imageUrl}
+                                        alt={product.name}
+                                        sx={{ objectFit: 'cover', objectPosition: "top center", flexShrink: "0"}}
+                                    />
+                                    <CardContent sx={{ flexGrow: 1 }}>
+                                        <Typography variant="h6">{product.name}</Typography>
+                                        <Typography variant="body2" color="textSecondary">{product.description}</Typography>
+                                        <Typography variant="body1" sx= {{ pt: 1 }}>{product.priceLabel}</Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button
+                                            fullWidth
+                                            variant="contained"
+                                            startIcon={<AddShoppingCartIcon />}
+                                            onClick={() => handleAddToCart(product)}
+                                        >
+                                            Add to Cart
+                                        </Button>
+                                    </CardActions>
+                                </Card>
+                            ))}
+                            {sortedProducts.length === 0 && (
+                                <Typography>No products found.</Typography>
+                            )}
+                        </Box>
                     </Box>
                 </Box>
             )}

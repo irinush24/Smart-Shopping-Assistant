@@ -5,13 +5,14 @@ import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import {ThemeProvider} from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import theme from "./theme/theme.ts";
+import { appTheme } from "./theme/theme.ts"
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={appTheme}>
             <CssBaseline />
+            {/* Applies the background color globally */}
             <App />
         </ThemeProvider>
     </BrowserRouter>
