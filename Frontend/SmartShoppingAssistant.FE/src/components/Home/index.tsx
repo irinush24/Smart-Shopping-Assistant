@@ -10,7 +10,7 @@ function Home()
           Hi, I'm Iri! 🎀 I am the hands and heart behind the crochet hooks here at Handmade Hugs. I started this shop to share my love for all things cozy, hyper-cute, and nostalgic. Creating these little friends and delicate accessories brings me so much joy, and my biggest hope is that when you open your package, you can feel the love and care stitched into every single loop. Thank you for supporting my small handmade dream! ✨
       </Typography>
       <Box component = "img" 
-        src="/public/tag.png" 
+        src="tag.png" 
         alt="Handmade Hugs by Iri main tag"
         sx={{
           width: "100%",
